@@ -1,4 +1,6 @@
 var path = require('path');
+
+/*
 var knex = require('knex')({
   client: 'sqlite3',
   connection: {
@@ -6,6 +8,8 @@ var knex = require('knex')({
   },
   useNullAsDefault: true
 });
+
+
 var db = require('bookshelf')(knex);
 
 db.knex.schema.hasTable('urls').then(function(exists) {
@@ -37,4 +41,50 @@ db.knex.schema.hasTable('users').then(function(exists) {
   }
 });
 
+
 module.exports = db;
+
+*/
+
+
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/');
+
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log("CONNECTED");
+});
+
+
+
+
+var Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
+
+var url = new Schema({
+    id         : ObjectId,
+    url        : String,
+    baseUrl    : String,
+    code       : String,
+    title      : String,
+    visits     : {type: Number, default:0 },
+    timestamps : {type: Date, default: Date.now }
+});
+
+
+var users = new Schema({
+    id         : ObjectId,
+    username   : {type: String, unique: true },
+    password   : String,
+    timestamps : { type: Date, default: Date.now}
+});
+
+
+
+
+module.exports = db;
+
+
